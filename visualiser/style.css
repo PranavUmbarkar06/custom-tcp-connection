@@ -1,0 +1,203 @@
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f2f2f2;
+    color: #222;
+    margin: 0;
+    padding: 16px;
+}
+
+h1 {
+    text-align: center;
+    font-size: 24px;
+}
+
+h2 {
+    font-size: 18px;
+    margin: 0 0 8px 0;
+}
+
+h3 {
+    font-size: 14px;
+    margin: 10px 0 6px 0;
+}
+
+.box {
+    background-color: white;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    padding: 12px;
+    margin-bottom: 12px;
+}
+
+label {
+    display: inline-block;
+    margin: 4px 12px 4px 0;
+}
+
+button {
+    padding: 6px 14px;
+    margin: 4px 4px 4px 0;
+    cursor: pointer;
+}
+
+#stepMsg {
+    font-weight: bold;
+    color: #1a4f8b;
+}
+
+/* ---------- Sender | Channel | Receiver ---------- */
+.stage {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 12px;
+}
+
+.side {
+    width: 230px;
+    background-color: white;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    padding: 10px;
+}
+
+.side p {
+    margin: 4px 0;
+    font-size: 14px;
+}
+
+.channel {
+    flex: 1;
+    position: relative;
+    height: 230px;
+    background-color: #dfe9f3;
+    border: 2px dashed #7a9cc6;
+    border-radius: 6px;
+    overflow: hidden;
+}
+
+.lane-label {
+    position: absolute;
+    left: 0;
+    width: 100%;
+    text-align: center;
+    font-size: 12px;
+    color: #555;
+}
+
+/* ---------- Buffers ---------- */
+.buffer {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+}
+
+.cell {
+    width: 34px;
+    height: 34px;
+    line-height: 34px;
+    text-align: center;
+    font-size: 13px;
+    border: 2px solid #999;
+    border-radius: 4px;
+}
+
+.notsent  { background-color: #ffffff; }
+.sent     { background-color: #ffe08a; }
+.acked    { background-color: #9be39b; }
+.stored   { background-color: #8ec5ff; }
+.inwindow { border-color: #1a4f8b; border-width: 3px; }
+.lostkey  { background-color: #ff8a8a; }
+
+.legend .key {
+    display: inline-block;
+    padding: 4px 8px;
+    margin: 2px;
+    border: 2px solid #999;
+    border-radius: 4px;
+    font-size: 13px;
+}
+
+/* ---------- Envelope ---------- */
+.envelope {
+    position: absolute;
+    width: 66px;
+    height: 42px;
+    background-color: #fff3d0;
+    border: 2px solid #8b6d3f;
+    border-radius: 3px;
+    overflow: hidden;
+    transition: left 0.6s linear, top 0.6s, opacity 0.6s, transform 0.6s;
+}
+
+/* The flap: a turned square, only its bottom corner shows as a "V" */
+.envelope::before {
+    content: "";
+    position: absolute;
+    width: 34px;
+    height: 34px;
+    left: 14px;
+    top: -26px;
+    background-color: inherit;
+    border: 2px solid #8b6d3f;
+    transform: rotate(45deg);
+}
+
+.envelope span {
+    position: absolute;
+    bottom: 2px;
+    width: 100%;
+    text-align: center;
+    font-size: 11px;
+    font-weight: bold;
+}
+
+/* Envelope colour depends on packet type */
+.envelope.ACK    { background-color: #c9f2c9; }
+.envelope.SYN,
+.envelope.SYNACK { background-color: #cfe3ff; }
+.envelope.FIN    { background-color: #ffd6ec; }
+.envelope.PROBE,
+.envelope.PAUSE,
+.envelope.RESUME { background-color: #e3d9ff; }
+
+/* Retransmitted packets get a red border */
+.envelope.resend,
+.envelope.resend::before { border-color: #d22; }
+
+/* Lost envelope: turns red, falls and fades away */
+.envelope.lost {
+    background-color: #ff8a8a;
+    opacity: 0;
+    top: 200px !important;
+    transform: rotate(40deg);
+}
+
+/* ---------- Event log ---------- */
+#eventList {
+    max-height: 220px;
+    overflow-y: auto;
+    font-size: 13px;
+    margin: 0;
+}
+
+#eventList li.lost {
+    color: #c00;
+    font-weight: bold;
+}
+
+#eventList li.current {
+    background-color: #fff6b0;
+}
+
+/* Small screens: stack sender, channel and receiver */
+@media (max-width: 700px) {
+    .stage {
+        flex-direction: column;
+    }
+    .side {
+        width: auto;
+    }
+    .channel {
+        flex: none;
+    }
+}

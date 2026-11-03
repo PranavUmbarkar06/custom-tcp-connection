@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>TCP Session Replay</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <h1>TCP over UDP - Session Replay</h1>
+
+    <!-- Step 1: load the two log files -->
+    <div class="box">
+        <h2>1. Load Logs</h2>
+        <label>Sender log (server/sender_log.txt):
+            <input type="file" id="senderFile">
+        </label>
+        <label>Receiver log (client/receiver_log.txt):
+            <input type="file" id="receiverFile">
+        </label>
+        <button onclick="loadFiles()">Load Logs</button>
+        <button onclick="loadSample()">Use Sample Logs</button>
+        <p id="loadMsg"></p>
+    </div>
+
+    <!-- Step 2: replay controls -->
+    <div class="box">
+        <h2>2. Replay</h2>
+        <button onclick="play()">Play</button>
+        <button onclick="pause()">Pause</button>
+        <button onclick="nextStep()">Step</button>
+        <button onclick="restart()">Restart</button>
+        <label>Speed:
+            <select id="speed" onchange="changeSpeed()">
+                <option value="1500">Slow</option>
+                <option value="800" selected>Normal</option>
+                <option value="350">Fast</option>
+            </select>
+        </label>
+        <p id="stepMsg">Load the logs to start.</p>
+    </div>
+
+    <!-- Sender | Channel | Receiver -->
+    <div class="stage">
+
+        <div class="side">
+            <h2>Sender</h2>
+            <p>State: <b id="senderState">CLOSED</b></p>
+            <p id="senderInfo">base = 0, next = 0, window = 10</p>
+            <h3>Send buffer</h3>
+            <div id="senderBuffer" class="buffer"></div>
+        </div>
+
+        <div class="channel" id="channel">
+            <div class="lane-label" style="top: 8px;">Sender &rarr; Receiver</div>
+            <div class="lane-label" style="top: 118px;">Sender &larr; Receiver</div>
+        </div>
+
+        <div class="side">
+            <h2>Receiver</h2>
+            <p>State: <b id="receiverState">LISTEN</b></p>
+            <p id="receiverInfo">expected = 0, written to disk = 0</p>
+            <h3>Receive buffer (10 slots)</h3>
+            <div id="receiverBuffer" class="buffer"></div>
+        </div>
+
+    </div>
+
+    <!-- Colour key -->
+    <div class="box legend">
+        <span class="key notsent">not sent</span>
+        <span class="key sent">sent, waiting for ACK</span>
+        <span class="key acked">ACKed</span>
+        <span class="key inwindow">inside window</span>
+        <span class="key stored">stored in buffer</span>
+        <span class="key lostkey">lost packet</span>
+    </div>
+
+    <!-- Everything that has happened so far -->
+    <div class="box">
+        <h2>Event Log</h2>
+        <ol id="eventList"></ol>
+    </div>
+
+    <script src="sample_logs.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
